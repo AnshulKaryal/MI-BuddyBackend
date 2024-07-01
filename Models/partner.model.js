@@ -17,6 +17,10 @@ const PartnerSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    password:{
+        type: String,
+        require: true
+    },
     mobile: {
         type: Number,
         require: true
