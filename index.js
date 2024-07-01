@@ -1,39 +1,57 @@
-import dotenv from "dotenv";
 import express from "express";
-import cors from 'cors'
 import mongoConnect from './Db/conn.js';
+import 'dotenv/config'
+import morgan from "morgan";
+import * as ServerStatus from './Middleware/helper.js'
+import userRoute from './Router/UserRoute.js'
+import partnerRoute from './Router/PartnerRoute.js'
 
 const app = express();
 
-dotenv.config({
-    path: './env'
+const port = process.env.PORT || 8080;
+
+app.use(express.json());
+
+app.use(morgan('tiny'))
+app.disable('x-powered-by') //less hackers know about our stack
+
+// HTTP GET Request
+app.get('/', ServerStatus.getServerLoadInfo , (req, res) => {
+    const uptime =  ServerStatus.calculateUptime();
+    const serverLoadInfo = req.serverLoadInfo;
+    res.status(201).send({
+        success: true,
+        message: 'MI Buddy Backend!',
+        dateTime: new Date().toLocaleString(),
+        connectedClient: process.env.CLIENT_BASE_URL,
+        systemStatus:{
+            uptime: `${uptime}s`,
+            cpuLoad: serverLoadInfo.cpuLoad,
+            memoryUsage: serverLoadInfo.memoryUsage,
+        }
+    })
 })
 
-mongoConnect()
-.then(() => {
-    //listening error for event on the MongoDb
-    app.on("error", (err) => {
-        console.log("Error: ",err);
-        throw error
-    })
+// api routes
+app.use('/api', userRoute)
+app.use('/api', partnerRoute)
 
-    app.listen(process.env.PORT || 8000 ,() => {
-        console.log(`Express Server is Running At port: ${process.env.PORT}`);
-    })
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
+
+// start server only when we have valid connection
+mongoConnect().then(() => {
+    try {
+        app.listen(port, () => {
+            console.log(`Server connected to  http://localhost:${port}`)
+        })
+    } catch (error) {
+        console.log("Can\'t connect to the server");
+    }
 })
 .catch((err) => {
-    console.log("Mongo DB connnectio failed !!!",err);
+    console.log("MongoDB connnection failed !!!",err);
 })
-
-
-//............. link the router to make easy routing..........//
-// app.use(require("./api",router));
-
-
-
-
-
-
-// app.listen(3000,() => {
-//     console.log("Express Server is Running");
-// })

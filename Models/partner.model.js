@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const PartnerSchema = new mongoose.Schema({
     fname: {
@@ -52,6 +51,4 @@ const PartnerSchema = new mongoose.Schema({
     },
 });
 
-PartnerSchema.plugin(mongooseAggregatePaginate)
-
-export default mongoose.model.Partner || mongoose.model('PARTNER',PartnerSchema);
+export default mongoose.model.Partner || mongoose.model('Partner',PartnerSchema);

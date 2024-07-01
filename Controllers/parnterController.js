@@ -1,4 +1,4 @@
-import PartnerModel from '../Models/partner.model';
+import PartnerModel from '../Models/partner.model.js';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
