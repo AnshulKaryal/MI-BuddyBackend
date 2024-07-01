@@ -10,7 +10,7 @@ const PartnerSchema = new mongoose.Schema({
         require: true
     },
     avatar:{
-        type: String,  //cloudinary url
+        type: String,
         require: true
     },
     email: {

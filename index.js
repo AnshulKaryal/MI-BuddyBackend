@@ -2,6 +2,13 @@ import express from "express";
 import mongoConnect from './Db/conn.js';
 import 'dotenv/config'
 import morgan from "morgan";
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 import * as ServerStatus from './Middleware/helper.js'
 import userRoute from './Router/UserRoute.js'
 import partnerRoute from './Router/PartnerRoute.js'
@@ -10,7 +17,11 @@ const app = express();
 
 const port = process.env.PORT || 8080;
 
+// Middleware to parse JSON bodies
 app.use(express.json());
+
+// Middleware to serve static files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(morgan('tiny'))
 app.disable('x-powered-by') //less hackers know about our stack
