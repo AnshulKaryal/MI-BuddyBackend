@@ -205,10 +205,18 @@ export async function getPartnerDetails(req, res) {
     }
 }
 
-/** GET: http://localhost:3010/api/allpartner */
+/** GET: http://localhost:3010/api/allpartner?role=Carpainter */
 export async function getAllPartners(req, res) {
     try {
-        const partners = await PartnerModel.find().exec();
+        const { role } = req.query;
+
+        // Define the filter criteria
+        const filter = {};
+        if (role) {
+            filter.role = role;
+        }
+
+        const partners = await PartnerModel.find(filter).exec();
 
         const sanitizedPartners = partners.map(partner => {
             const { password, ...partnerData } = partner.toObject();
