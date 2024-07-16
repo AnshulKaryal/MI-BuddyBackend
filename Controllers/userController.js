@@ -150,3 +150,11 @@ export async function login(req, res) {
 		return res.status(500).send(error)
 	}
 }
+
+export async function ContactUs(req, res) {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Internal Server Error', error });
+    }
+}
